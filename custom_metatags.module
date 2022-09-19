@@ -1,0 +1,22 @@
+<?php
+use Drupal\node\NodeInterface;
+/**
+ * Implements hook_ENTITY_TYPE_presave()
+ */
+function adl_metatags_node_presave(NodeInterface $entity) {
+  $metatags = \Drupal::service('metatag.manager')->tagsFromEntityWithDefaults($entity);
+  if ($metatags['image_src'] == '[node:field_media_image:entity:field_media_image]') {
+    $social_image_meta_tag = FALSE;
+    if($entity->hasField('field_social_media_image') && !$entity->get('field_social_media_image')->isEmpty()) {
+      $social_image_meta_tag = '[node:field_social_media_image:field_media_image]';
+    }
+    elseif(!$entity->hasField('field_media_image') || $entity->get('field_media_image')->isEmpty()) {
+      $social_image_meta_tag = file_create_url(theme_get_setting('logo.url'));
+    }
+    if ($social_image_meta_tag) {
+      $entity->set('field_meta_tags', serialize([
+        'image_src' => $social_image_meta_tag,
+      ]));
+    }
+  } 
+}
