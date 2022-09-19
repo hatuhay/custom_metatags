@@ -1,0 +1,5 @@
+name: Custom metatags
+description: This module adds metatags management.
+package: Custom
+type: module
+core_version_requirement: ^9
